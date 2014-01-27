@@ -198,6 +198,7 @@ public class CameraActivity extends Activity
     private OnScreenHint mStorageHint;
     private long mStorageSpaceBytes = Storage.LOW_STORAGE_THRESHOLD_BYTES;
     private boolean mSecureCamera;
+    private boolean mInCameraApp = true;
     // This is a hack to speed up the start of SecureCamera.
     private static boolean sFirstStartAfterScreenOn = true;
     private int mLastRawOrientation;
@@ -1796,6 +1797,10 @@ public class CameraActivity extends Activity
         return mSecureCamera;
     }
 
+    public boolean isInCameraApp() {
+        return mInCameraApp;
+    }
+
     @Override
     public void onModuleSelected(int moduleIndex) {
         if (mCurrentModuleIndex == moduleIndex) {
@@ -2025,6 +2030,10 @@ public class CameraActivity extends Activity
      */
     private void setPreviewControlsVisibility(boolean showControls) {
         mCurrentModule.onPreviewFocusChanged(showControls);
+
+        // controls are only shown when the camera app is active
+        // so we can assume to fetch this information from here
+        mInCameraApp = showControls;
     }
 
     // Accessor methods for getting latency times used in performance testing

@@ -2467,21 +2467,24 @@ public class PhotoModule
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Do not handle any key if the activity is
+        // not in active camera/video mode
+        if (!mActivity.isInCameraApp()) {
+            return false;
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
-                if (/*TODO: mActivity.isInCameraApp() &&*/ mFirstTimeInitialized
-                    && (mUI.mMenuInitialized)) {
+                if (mFirstTimeInitialized && (mUI.mMenuInitialized)) {
                     mUI.onScaleStepResize(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (/*TODO: mActivity.isInCameraApp() &&*/ mFirstTimeInitialized
-                    && (mUI.mMenuInitialized)) {
+                if (mFirstTimeInitialized && (mUI.mMenuInitialized)) {
                     mUI.onScaleStepResize(false);
                 }
                 return true;
             case KeyEvent.KEYCODE_FOCUS:
-                if (/*TODO: mActivity.isInCameraApp() &&*/ mFirstTimeInitialized) {
+                if (mFirstTimeInitialized) {
                     if (event.getRepeatCount() == 0) {
                         onShutterButtonFocus(true);
                     }
