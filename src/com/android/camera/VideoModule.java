@@ -1203,12 +1203,15 @@ public class VideoModule implements CameraModule,
 
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
                 mUI.onScaleStepResize(true);
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 mUI.onScaleStepResize(false);
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_HEADSETHOOK:
                 if (event.getRepeatCount() == 0) {
                     mUI.clickShutter();
                     return true;
@@ -1231,9 +1234,13 @@ public class VideoModule implements CameraModule,
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_HEADSETHOOK:
                 mUI.pressShutter(false);
                 return true;
         }

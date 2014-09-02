@@ -2474,11 +2474,13 @@ public class PhotoModule
         }
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
                 if (mFirstTimeInitialized && (mUI.mMenuInitialized)) {
                     mUI.onScaleStepResize(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 if (mFirstTimeInitialized && (mUI.mMenuInitialized)) {
                     mUI.onScaleStepResize(false);
                 }
@@ -2492,6 +2494,7 @@ public class PhotoModule
                 }
                 return false;
             case KeyEvent.KEYCODE_CAMERA:
+            case KeyEvent.KEYCODE_HEADSETHOOK:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
                     onShutterButtonClick();
                 }
@@ -2516,6 +2519,8 @@ public class PhotoModule
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 return true;
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
