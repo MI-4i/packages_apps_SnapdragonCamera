@@ -180,7 +180,8 @@ public class PhotoMenu extends MenuController
                 CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_WHITE_BALANCE,
                 CameraSettings.KEY_FOCUS_MODE,
-                CameraSettings.KEY_REDEYE_REDUCTION
+                CameraSettings.KEY_REDEYE_REDUCTION,
+                CameraSettings.KEY_MAX_BRIGHTNESS
         };
 
         mOtherKeys2 = new String[] {
@@ -197,6 +198,7 @@ public class PhotoMenu extends MenuController
                 CameraSettings.KEY_WHITE_BALANCE,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_REDEYE_REDUCTION,
+                CameraSettings.KEY_MAX_BRIGHTNESS,
                 CameraSettings.KEY_AUTO_HDR,
                 CameraSettings.KEY_HDR_MODE,
                 CameraSettings.KEY_HDR_NEED_1X,

@@ -439,6 +439,9 @@ public class VideoModule implements CameraModule,
 
         mOrientationManager = new OrientationManager(mActivity);
 
+        // Max brightness
+        mActivity.initMaxBrightness(mPreferences);
+
         /*
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
@@ -2510,6 +2513,7 @@ public class VideoModule implements CameraModule,
             Storage.setSaveSDCard(
                 mPreferences.getString(CameraSettings.KEY_CAMERA_SAVEPATH, "0").equals("1"));
             mActivity.updateStorageSpaceAndHint();
+            mActivity.initMaxBrightness(mPreferences);
         }
     }
 

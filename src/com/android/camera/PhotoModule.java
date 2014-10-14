@@ -493,6 +493,9 @@ public class PhotoModule
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
+        // Max brightness
+        mActivity.initMaxBrightness(mPreferences);
+
         if (mOpenCameraThread == null) {
             mOpenCameraThread = new OpenCameraThread();
             mOpenCameraThread.start();
@@ -2314,6 +2317,9 @@ public class PhotoModule
         // and startPreview hasn't been called, then this is a no-op.
         // (e.g. onResume -> onPause -> onResume).
         stopPreview();
+
+        // Load max brightness
+        mActivity.initMaxBrightness(mPreferences);
 
         mNamedImages = null;
 
@@ -4192,6 +4198,7 @@ public class PhotoModule
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
             mUI.updateOnScreenIndicators(mParameters, mPreferenceGroup,
                 mPreferences);
+            mActivity.initMaxBrightness(mPreferences);
         } else {
             mHandler.sendEmptyMessage(SET_PHOTO_UI_PARAMS);
         }
