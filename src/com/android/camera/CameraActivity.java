@@ -116,6 +116,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.android.camera.CameraManager.CameraOpenErrorCallback;
+import com.android.camera.SDCard;
 
 import android.media.AudioManager;
 
@@ -246,6 +247,7 @@ public class CameraActivity extends Activity
     private int mShutterVol;
     private int mOriginalMasterVol;
     private WakeLock mWakeLock;
+    private Context mContext;
 
     private class MyOrientationEventListener
             extends OrientationEventListener {
@@ -1403,6 +1405,9 @@ public class CameraActivity extends Activity
             }
         }
         GcamHelper.init(getContentResolver());
+
+        mContext = getApplicationContext();
+        SDCard.initialize(mContext);
 
 /*
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
