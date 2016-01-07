@@ -2051,7 +2051,8 @@ public class PhotoModule
         if (mCameraDevice == null
                 || mPaused || mUI.collapseCameraControls()
                 || (mCameraState == SNAPSHOT_IN_PROGRESS)
-                || (mCameraState == PREVIEW_STOPPED)) {
+                || (mCameraState == PREVIEW_STOPPED)
+                || (null == mFocusManager)) {
             Log.v(TAG, "onShutterButtonFocus error case mCameraState = " + mCameraState
                 + "mCameraDevice = " + mCameraDevice + "mPaused =" + mPaused);
             return;
@@ -2083,7 +2084,8 @@ public class PhotoModule
         if (mPaused || mShutterPressing
                 || mUI.collapseCameraControls()
                 || (mCameraState == SWITCHING_CAMERA)
-                || (mCameraState == PREVIEW_STOPPED)) return;
+                || (mCameraState == PREVIEW_STOPPED)
+                || (null == mFocusManager)) return;
         mShutterPressing = true;
         // Do not take the picture if there is not enough storage.
         if (mActivity.getStorageSpaceBytes() <= Storage.LOW_STORAGE_THRESHOLD_BYTES) {
