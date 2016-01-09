@@ -2931,7 +2931,6 @@ public class PhotoModule
         if (CameraUtil.isSupported(shutterSpeed,
             CameraSettings.getSupportedShutterSpeedValues(mParameters))) {
             mParameters.set(CameraSettings.KEY_SNAPCAM_SHUTTER_SPEED, shutterSpeed);
-            ;
         }
         // Set color effect parameter.
         String colorEffect = mPreferences.getString(
