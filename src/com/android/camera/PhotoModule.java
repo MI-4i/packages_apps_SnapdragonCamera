@@ -455,8 +455,6 @@ public class PhotoModule
 
                case SET_PHOTO_UI_PARAMS: {
                     setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
-                    mUI.updateOnScreenIndicators(mParameters, mPreferenceGroup,
-                        mPreferences);
                     break;
                }
 
@@ -2305,8 +2303,6 @@ public class PhotoModule
         }
         mUI.initDisplayChangeListener();
         keepScreenOnAwhile();
-        mUI.updateOnScreenIndicators(mParameters, mPreferenceGroup,
-                        mPreferences);
 
         UsageStatistics.onContentViewChanged(
                 UsageStatistics.COMPONENT_CAMERA, "PhotoModule");
