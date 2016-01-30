@@ -571,7 +571,7 @@ public class PhotoMenu extends MenuController
                 }
             } else if (tnr != null) {
                 mListMenu.setPreferenceEnabled(CameraSettings.KEY_CDS_MODE, true);
-                if (mIsTNREnabled && mPrevSavedCDS != cds) {
+                if (mIsTNREnabled && !mPrevSavedCDS.equals(cds)) {
                     mListMenu.overrideSettings(CameraSettings.KEY_CDS_MODE, mPrevSavedCDS);
                     mIsTNREnabled = false;
                     mIsCDSUpdated = false;
@@ -1223,3 +1223,4 @@ public class PhotoMenu extends MenuController
         mPreviewThumbnail.setVisibility(status);
     }
 }
+

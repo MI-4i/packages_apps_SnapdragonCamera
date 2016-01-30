@@ -1180,7 +1180,7 @@ public class PhotoModule
                 if (!mRefocus) {
                     stopPreview();
                 }
-            } else if (mSceneMode == CameraUtil.SCENE_MODE_HDR) {
+            } else if (mSceneMode.equals(CameraUtil.SCENE_MODE_HDR)) {
                 mUI.showSwitcher();
                 mUI.setSwipingEnabled(true);
             }
@@ -1532,7 +1532,7 @@ public class PhotoModule
         mPostViewPictureCallbackTime = 0;
         mJpegImageData = null;
 
-        final boolean animateBefore = (mSceneMode == CameraUtil.SCENE_MODE_HDR);
+        final boolean animateBefore = (mSceneMode.equals(CameraUtil.SCENE_MODE_HDR));
         if(mHistogramEnabled) {
             if (mSnapshotMode != CameraInfo.CAMERA_SUPPORT_MODE_ZSL) {
                 mHistogramEnabled = false;
@@ -2131,7 +2131,7 @@ public class PhotoModule
         }
         Log.v(TAG, "onShutterButtonClick: mCameraState=" + mCameraState);
 
-        if (mSceneMode == CameraUtil.SCENE_MODE_HDR) {
+        if (mSceneMode.equals(CameraUtil.SCENE_MODE_HDR)) {
             mUI.hideSwitcher();
             mUI.setSwipingEnabled(false);
         }
@@ -4439,3 +4439,4 @@ public class PhotoModule
                 !mLongshotActive);
     }
 }
+
