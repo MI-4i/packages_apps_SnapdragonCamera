@@ -238,6 +238,8 @@ public class CameraSettings {
     public static final String KEY_SELFIE_FLASH = "pref_selfie_flash_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
+    public static final String VALUE_ON = "on";
+    public static final String VALUE_OFF = "off";
 
     public static final int CURRENT_VERSION = 6;
     public static final int CURRENT_LOCAL_VERSION = 2;
