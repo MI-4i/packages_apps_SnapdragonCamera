@@ -3733,7 +3733,7 @@ public class PhotoModule
             final int maxFocusPos = mParameters.getInt(CameraSettings.KEY_MAX_FOCUS_SCALE);
             //update mparameters to fetch latest focus position
             mParameters = mCameraDevice.getParameters();
-            int CurFocusPos = 0;
+            int CurFocusPos = minFocusPos;
 
             try {
                  CurFocusPos = mParameters.getInt(CameraSettings.KEY_MANUAL_FOCUS_SCALE);
@@ -3792,7 +3792,8 @@ public class PhotoModule
             //update mparameters to fetch latest focus position
             mParameters = mCameraDevice.getParameters();
             final String CurFocusPos = mParameters.get(CameraSettings.KEY_MANUAL_FOCUS_DIOPTER);
-            focusPositionText.setText("Current focus position is " + CurFocusPos);
+            focusPositionText.setText("Current focus position is " +
+                    (CurFocusPos != null ? CurFocusPos : minFocusStr));
             linear.addView(input);
             linear.addView(focusPositionText);
             alert.setView(linear);
