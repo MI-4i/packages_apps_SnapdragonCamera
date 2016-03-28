@@ -34,6 +34,7 @@ import java.io.FileWriter;
  */
 
 public class CameraLatency extends ActivityInstrumentationTestCase2 <CameraActivity> {
+    private String TAG = "CameraLatency";
     private static final int TOTAL_NUMBER_OF_IMAGECAPTURE = 20;
     private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 6 * 1000; //6 seconds.
     private static final String CAMERA_TEST_OUTPUT_FILE =
@@ -44,6 +45,11 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <CameraActiv
     private long mTotalShutterToPictureDisplayedTime;
     private long mTotalPictureDisplayedToJpegCallbackTime;
     private long mTotalJpegCallbackFinishTime;
+    private long mAvgAutoFocusTime;
+    private long mAvgShutterLag = mTotalShutterLag;
+    private long mAvgShutterToPictureDisplayedTime;
+    private long mAvgPictureDisplayedToJpegCallbackTime;
+    private long mAvgJpegCallbackFinishTime;
 
     public CameraLatency() {
         super(CameraActivity.class);
@@ -62,7 +68,6 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <CameraActiv
     }
 
     public void testImageCapture() {
-        String TAG = "CameraLatency";
         Log.v(TAG, "start testImageCapture test");
         Instrumentation inst = getInstrumentation();
         try {
@@ -101,11 +106,14 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <CameraActiv
         //2) Only count those number with succesful capture. Set the timer to invalid
         //before capture and ignore them if the value is invalid
         int numberofRun = TOTAL_NUMBER_OF_IMAGECAPTURE - 1;
-        long mAvgAutoFocusTime = mTotalAutoFocusTime / numberofRun;
-        long mAvgShutterLag = mTotalShutterLag / numberofRun;
-        long mAvgShutterToPictureDisplayedTime = mTotalShutterToPictureDisplayedTime / numberofRun;
-        long mAvgPictureDisplayedToJpegCallbackTime = mTotalPictureDisplayedToJpegCallbackTime / numberofRun;
-        long mAvgJpegCallbackFinishTime = mTotalJpegCallbackFinishTime / numberofRun;
+        mAvgAutoFocusTime = mTotalAutoFocusTime / numberofRun;
+        mAvgShutterLag = mTotalShutterLag / numberofRun;
+        mAvgShutterToPictureDisplayedTime =
+                mTotalShutterToPictureDisplayedTime / numberofRun;
+        mAvgPictureDisplayedToJpegCallbackTime =
+                mTotalPictureDisplayedToJpegCallbackTime / numberofRun;
+        mAvgJpegCallbackFinishTime =
+                mTotalJpegCallbackFinishTime / numberofRun;
 
         try {
             FileWriter fstream = null;
@@ -137,5 +145,4 @@ public class CameraLatency extends ActivityInstrumentationTestCase2 <CameraActiv
         Log.v(TAG, "Avg mJpegCallbackFinishTime = " + mAvgJpegCallbackFinishTime);
     }
 }
-
 

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2013-2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -511,6 +512,9 @@ public class PhotoModule
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
+        // Power shutter
+        mActivity.initPowerShutter(mPreferences);
+
         // Max brightness
         mActivity.initMaxBrightness(mPreferences);
 
@@ -965,6 +969,11 @@ public class PhotoModule
 
     private final class LongshotShutterCallback
             implements CameraShutterCallback {
+        private int mExpectedLongshotSnapNum;
+
+        public LongshotShutterCallback() {
+            mExpectedLongshotSnapNum = mLongshotSnapNum;
+        }
 
         @Override
         public void onShutter(CameraProxy camera) {
@@ -972,6 +981,9 @@ public class PhotoModule
             mShutterLag = mShutterCallbackTime - mCaptureStartTime;
             Log.e(TAG, "[KPI Perf] PROFILE_SHUTTER_LAG mShutterLag = " + mShutterLag + "ms");
             synchronized(mCameraDevice) {
+                if (mExpectedLongshotSnapNum != mLongshotSnapNum) {
+                    return;
+                }
 
                 if (++mLongshotSnapNum >= mLongShotMaxSnap &&
                     (mLongShotMaxSnap != -1)) {
@@ -1180,7 +1192,7 @@ public class PhotoModule
                 if (!mRefocus) {
                     stopPreview();
                 }
-            } else if (mSceneMode.equals(CameraUtil.SCENE_MODE_HDR)) {
+            } else if (mSceneMode == CameraUtil.SCENE_MODE_HDR) {
                 mUI.showSwitcher();
                 mUI.setSwipingEnabled(true);
             }
@@ -1532,7 +1544,7 @@ public class PhotoModule
         mPostViewPictureCallbackTime = 0;
         mJpegImageData = null;
 
-        final boolean animateBefore = (mSceneMode.equals(CameraUtil.SCENE_MODE_HDR));
+        final boolean animateBefore = (mSceneMode == CameraUtil.SCENE_MODE_HDR);
         if(mHistogramEnabled) {
             if (mSnapshotMode != CameraInfo.CAMERA_SUPPORT_MODE_ZSL) {
                 mHistogramEnabled = false;
@@ -2131,7 +2143,7 @@ public class PhotoModule
         }
         Log.v(TAG, "onShutterButtonClick: mCameraState=" + mCameraState);
 
-        if (mSceneMode.equals(CameraUtil.SCENE_MODE_HDR)) {
+        if (mSceneMode == CameraUtil.SCENE_MODE_HDR) {
             mUI.hideSwitcher();
             mUI.setSwipingEnabled(false);
         }
@@ -2398,6 +2410,9 @@ public class PhotoModule
         // (e.g. onResume -> onPause -> onResume).
         stopPreview();
 
+        // Load the power shutter
+        mActivity.initPowerShutter(mPreferences);
+
         // Load max brightness
         mActivity.initMaxBrightness(mPreferences);
 
@@ -2543,13 +2558,21 @@ public class PhotoModule
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_MEDIA_NEXT:
                 if (mFirstTimeInitialized && (mUI.mMenuInitialized)) {
-                    mUI.onScaleStepResize(true);
+                    if (!CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()) {
+                        onShutterButtonFocus(true);
+                    } else {
+                        mUI.onScaleStepResize(true);
+                    }
                 }
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
                 if (mFirstTimeInitialized && (mUI.mMenuInitialized)) {
-                    mUI.onScaleStepResize(false);
+                    if (!CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()) {
+                        onShutterButtonFocus(true);
+                    } else {
+                        mUI.onScaleStepResize(false);
+                    }
                 }
                 return true;
             case KeyEvent.KEYCODE_FOCUS:
@@ -2577,6 +2600,12 @@ public class PhotoModule
                     mUI.pressShutterButton();
                 }
                 return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (mFirstTimeInitialized && event.getRepeatCount() == 0
+                        && CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()) {
+                    onShutterButtonFocus(true);
+                }
+                return true;
         }
         return false;
     }
@@ -2588,10 +2617,20 @@ public class PhotoModule
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_MEDIA_NEXT:
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                if (!CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()
+                        && mFirstTimeInitialized) {
+                    onShutterButtonClick();
+                }
                 return true;
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
                     onShutterButtonFocus(false);
+                }
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()
+                        && mFirstTimeInitialized) {
+                    onShutterButtonClick();
                 }
                 return true;
         }
@@ -4248,6 +4287,7 @@ public class PhotoModule
          * later by posting a message to the handler */
         if (mUI.mMenuInitialized) {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
+            mActivity.initPowerShutter(mPreferences);
             mActivity.initMaxBrightness(mPreferences);
         } else {
             mHandler.sendEmptyMessage(SET_PHOTO_UI_PARAMS);
@@ -4447,4 +4487,3 @@ public class PhotoModule
                 !mLongshotActive);
     }
 }
-

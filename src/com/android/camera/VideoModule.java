@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2013-2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -452,6 +453,9 @@ public class VideoModule implements CameraModule,
         resetExposureCompensation();
 
         mOrientationManager = new OrientationManager(mActivity);
+
+        // Power shutter
+        mActivity.initPowerShutter(mPreferences);
 
         // Max brightness
         mActivity.initMaxBrightness(mPreferences);
@@ -1364,27 +1368,43 @@ public class VideoModule implements CameraModule,
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_MEDIA_NEXT:
-                mUI.onScaleStepResize(true);
+                if (event.getRepeatCount() == 0 && !CameraActivity.mPowerShutter &&
+                        !CameraUtil.hasCameraKey()) {
+                    mUI.clickShutter();
+                } else {
+                    mUI.onScaleStepResize(true);
+                }
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                mUI.onScaleStepResize(false);
+                if (event.getRepeatCount() == 0 && !CameraActivity.mPowerShutter &&
+                        !CameraUtil.hasCameraKey()) {
+                    mUI.clickShutter();
+                } else {
+                    mUI.onScaleStepResize(false);
+                }
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
             case KeyEvent.KEYCODE_HEADSETHOOK:
                 if (event.getRepeatCount() == 0) {
                     mUI.clickShutter();
-                    return true;
                 }
-                break;
+                return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (event.getRepeatCount() == 0) {
                     mUI.clickShutter();
+                }
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (event.getRepeatCount() == 0 && CameraActivity.mPowerShutter &&
+                        !CameraUtil.hasCameraKey()) {
+                    mUI.clickShutter();
+                }
+                return true;
+            case KeyEvent.KEYCODE_MENU:
+                if (mMediaRecorderRecording) {
                     return true;
                 }
-                break;
-            case KeyEvent.KEYCODE_MENU:
-                if (mMediaRecorderRecording) return true;
                 break;
         }
         return false;
@@ -1395,13 +1415,24 @@ public class VideoModule implements CameraModule,
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_MEDIA_NEXT:
+                if (!CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()) {
+                    mUI.pressShutter(false);
+                }
                 return true;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                if (!CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()) {
+                    mUI.pressShutter(false);
+                }
                 return true;
             case KeyEvent.KEYCODE_CAMERA:
             case KeyEvent.KEYCODE_HEADSETHOOK:
                 mUI.pressShutter(false);
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()) {
+                    mUI.pressShutter(false);
+                }
                 return true;
         }
         return false;
@@ -2667,6 +2698,7 @@ public class VideoModule implements CameraModule,
             Storage.setSaveSDCard(
                 mPreferences.getString(CameraSettings.KEY_CAMERA_SAVEPATH, "0").equals("1"));
             mActivity.updateStorageSpaceAndHint();
+            mActivity.initPowerShutter(mPreferences);
             mActivity.initMaxBrightness(mPreferences);
         }
     }

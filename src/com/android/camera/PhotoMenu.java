@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2013-2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,6 +158,7 @@ public class PhotoMenu extends MenuController
                 CameraSettings.KEY_FOCUS_TIME,
                 CameraSettings.KEY_SHUTTER_SPEED,
                 CameraSettings.KEY_REDEYE_REDUCTION,
+                CameraSettings.KEY_POWER_SHUTTER,
                 CameraSettings.KEY_MAX_BRIGHTNESS
         };
 
@@ -177,6 +179,7 @@ public class PhotoMenu extends MenuController
                 CameraSettings.KEY_FOCUS_TIME,
                 CameraSettings.KEY_SHUTTER_SPEED,
                 CameraSettings.KEY_REDEYE_REDUCTION,
+                CameraSettings.KEY_POWER_SHUTTER,
                 CameraSettings.KEY_MAX_BRIGHTNESS,
                 CameraSettings.KEY_AUTO_HDR,
                 CameraSettings.KEY_HDR_MODE,
@@ -571,7 +574,7 @@ public class PhotoMenu extends MenuController
                 }
             } else if (tnr != null) {
                 mListMenu.setPreferenceEnabled(CameraSettings.KEY_CDS_MODE, true);
-                if (mIsTNREnabled && !mPrevSavedCDS.equals(cds)) {
+                if (mIsTNREnabled && mPrevSavedCDS != cds) {
                     mListMenu.overrideSettings(CameraSettings.KEY_CDS_MODE, mPrevSavedCDS);
                     mIsTNREnabled = false;
                     mIsCDSUpdated = false;
@@ -1223,4 +1226,3 @@ public class PhotoMenu extends MenuController
         mPreviewThumbnail.setVisibility(status);
     }
 }
-
